@@ -1,15 +1,17 @@
 export async function onRequest({ request, next }) {
-  // 你自己设的后台密码，改成你想要的，比如 "sabaki123"
+  // 🔒 请在这里设置你的后台密码
   const PASSWORD = "sabaki123";
   const url = new URL(request.url);
   const providedPassword = url.searchParams.get("password");
 
-  // 如果密码不对，返回 401 未授权
+  // 如果密码不对，返回登录页面
   if (providedPassword !== PASSWORD) {
     return new Response(`
+      <!DOCTYPE html>
       <html>
         <head>
-          <title>需要密码</title>
+          <meta charset="UTF-8">
+          <title>Access Restricted</title>
           <style>
             body { font-family: Arial; text-align: center; padding-top: 100px; background: #f5f5f5; }
             .box { background: white; padding: 30px; border-radius: 8px; display: inline-block; }
@@ -19,18 +21,18 @@ export async function onRequest({ request, next }) {
         </head>
         <body>
           <div class="box">
-            <h2>🔒 售楼后台需要密码</h2>
+            <h2>🔒 Sales Backend Access Required</h2>
             <form method="GET">
-              <input type="password" name="password" placeholder="请输入密码" required>
+              <input type="password" name="password" placeholder="Enter password" required>
               <br>
-              <button type="submit">登录</button>
+              <button type="submit">Login</button>
             </form>
           </div>
         </body>
       </html>
     `, {
       status: 401,
-      headers: { "Content-Type": "text/html" }
+      headers: { "Content-Type": "text/html; charset=utf-8" }
     });
   }
 
