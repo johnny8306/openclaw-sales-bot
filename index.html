@@ -1,25 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Sabaki Green Estate - AI Chat</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 100px;
-            background-color: #f0f8ff;
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        p {
-            color: #7f8c8d;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Sabaki Sales Management System</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+    body{background:#f4f7fa;padding:20px}
+    .container{max-width:1000px;margin:auto;background:white;padding:20px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+    h1{color:#2563eb;margin-bottom:20px;text-align:center}
+    .tab{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+    .tab button{padding:10px 20px;border:none;background:#e2e8f0;border-radius:6px;cursor:pointer}
+    .tab button.active{background:#2563eb;color:white}
+    .page{display:none}
+    .page.active{display:block}
+    .card{background:#f9fafb;padding:15px;border-radius:8px;margin-bottom:10px}
+    input,textarea,button{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:6px}
+    .save-btn{background:#2563eb;color:white;border:none}
+    .list{margin-top:15px}
+    .item{padding:10px;background:white;border:1px solid #eee;border-radius:6px;margin-bottom:8px}
+  </style>
 </head>
 <body>
-    <h1>✅ Sabaki Green Estate AI Chat</h1>
-    <p>域名绑定成功！OpenClaw 部署中...</p>
-    <p>Your custom domain chat.sabakigreenestate.net is working correctly.</p>
+  <div class="container">
+    <h1>🏠 Sabaki Sales Management System</h1>
+    <div class="tab">
+      <button class="tablink active" onclick="openPage('customers')">Customer Management</button>
+      <button class="tablink" onclick="openPage('payments')">Payment Records</button>
+    </div>
+
+    <div id="customers" class="page active">
+      <h2>Add Customer</h2>
+      <input type="text" id="cname" placeholder="Name">
+      <input type="text" id="cphone" placeholder="Phone">
+      <textarea id="cnote" placeholder="Requirement / Note"></textarea>
+      <button class="save-btn" onclick="saveCustomer()">Save Customer</button>
+      <div class="list" id="customerList"></div>
+    </div>
+
+    <div id="payments" class="page">
+      <h2>Add Payment Record</h2>
+      <input type="text" id="pname" placeholder="Customer Name">
+      <input type="text" id="pamount" placeholder="Amount">
+      <input type="text" id="pdate" placeholder="Date (e.g. 2025-10-01)">
+      <button class="save-btn" onclick="savePayment()">Save Payment</button>
+      <div class="list" id="paymentList"></div>
+    </div>
+  </div>
+
+  <script>
+    function openPage(id) {
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
+      document.querySelectorAll('.tablink').forEach(t=>t.classList.remove('active'))
+      document.getElementById(id).classList.add('active')
+      event.target.classList.add('active')
+    }
+
+    function saveCustomer() {
+      let name = document.getElementById('cname').value
+      let phone = document.getElementById('cphone').value
+      let note = document.getElementById('cnote').value
+      let list = document.getElementById('customerList')
+      let item = document.createElement('div')
+      item.className='item'
+      item.innerHTML = `<strong>${name}</strong><br>Phone: ${phone}<br>Note: ${note}`
+      list.appendChild(item)
+      document.getElementById('cname').value=''
+      document.getElementById('cphone').value=''
+      document.getElementById('cnote').value=''
+    }
+
+    function savePayment() {
+      let name = document.getElementById('pname').value
+      let amt = document.getElementById('pamount').value
+      let dt = document.getElementById('pdate').value
+      let list = document.getElementById('paymentList')
+      let item = document.createElement('div')
+      item.className='item'
+      item.innerHTML = `<strong>${name}</strong><br>Amount: ${amt}<br>Date: ${dt}`
+      list.appendChild(item)
+      document.getElementById('pname').value=''
+      document.getElementById('pamount').value=''
+      document.getElementById('pdate').value=''
+    }
+  </script>
 </body>
 </html>
