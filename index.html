@@ -18,6 +18,7 @@
     .save-btn{background:#2563eb;color:white;border:none}
     .list{margin-top:15px}
     .item{padding:10px;background:white;border:1px solid #eee;border-radius:6px;margin-bottom:8px}
+    .delete-btn{background:#ef4444;color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;margin-top:5px}
   </style>
 </head>
 <body>
@@ -48,6 +49,16 @@
   </div>
 
   <script>
+    // 初始化数据存储
+    let customers = JSON.parse(localStorage.getItem('sabaki_customers')) || [];
+    let payments = JSON.parse(localStorage.getItem('sabaki_payments')) || [];
+
+    // 页面加载时渲染数据
+    window.onload = function() {
+      renderCustomers();
+      renderPayments();
+    };
+
     function openPage(id) {
       document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
       document.querySelectorAll('.tablink').forEach(t=>t.classList.remove('active'))
@@ -56,31 +67,75 @@
     }
 
     function saveCustomer() {
-      let name = document.getElementById('cname').value
-      let phone = document.getElementById('cphone').value
-      let note = document.getElementById('cnote').value
-      let list = document.getElementById('customerList')
-      let item = document.createElement('div')
-      item.className='item'
-      item.innerHTML = `<strong>${name}</strong><br>Phone: ${phone}<br>Note: ${note}`
-      list.appendChild(item)
+      let name = document.getElementById('cname').value.trim();
+      let phone = document.getElementById('cphone').value.trim();
+      let note = document.getElementById('cnote').value.trim();
+      if (!name) return alert('Name is required');
+
+      customers.push({ id: Date.now(), name, phone, note });
+      localStorage.setItem('sabaki_customers', JSON.stringify(customers));
+      renderCustomers();
       document.getElementById('cname').value=''
       document.getElementById('cphone').value=''
       document.getElementById('cnote').value=''
     }
 
+    function renderCustomers() {
+      let list = document.getElementById('customerList');
+      list.innerHTML = '';
+      customers.forEach(c => {
+        let item = document.createElement('div');
+        item.className='item';
+        item.innerHTML = `
+          <strong>${c.name}</strong><br>
+          Phone: ${c.phone || 'N/A'}<br>
+          Note: ${c.note || 'N/A'}<br>
+          <button class="delete-btn" onclick="deleteCustomer(${c.id})">Delete</button>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function deleteCustomer(id) {
+      customers = customers.filter(c => c.id !== id);
+      localStorage.setItem('sabaki_customers', JSON.stringify(customers));
+      renderCustomers();
+    }
+
     function savePayment() {
-      let name = document.getElementById('pname').value
-      let amt = document.getElementById('pamount').value
-      let dt = document.getElementById('pdate').value
-      let list = document.getElementById('paymentList')
-      let item = document.createElement('div')
-      item.className='item'
-      item.innerHTML = `<strong>${name}</strong><br>Amount: ${amt}<br>Date: ${dt}`
-      list.appendChild(item)
+      let name = document.getElementById('pname').value.trim();
+      let amt = document.getElementById('pamount').value.trim();
+      let dt = document.getElementById('pdate').value.trim();
+      if (!name || !amt) return alert('Name and Amount are required');
+
+      payments.push({ id: Date.now(), name, amt, dt });
+      localStorage.setItem('sabaki_payments', JSON.stringify(payments));
+      renderPayments();
       document.getElementById('pname').value=''
       document.getElementById('pamount').value=''
       document.getElementById('pdate').value=''
+    }
+
+    function renderPayments() {
+      let list = document.getElementById('paymentList');
+      list.innerHTML = '';
+      payments.forEach(p => {
+        let item = document.createElement('div');
+        item.className='item';
+        item.innerHTML = `
+          <strong>${p.name}</strong><br>
+          Amount: ${p.amt}<br>
+          Date: ${p.dt || 'N/A'}<br>
+          <button class="delete-btn" onclick="deletePayment(${p.id})">Delete</button>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function deletePayment(id) {
+      payments = payments.filter(p => p.id !== id);
+      localStorage.setItem('sabaki_payments', JSON.stringify(payments));
+      renderPayments();
     }
   </script>
 </body>
