@@ -1,25 +1,32 @@
 import os
-    from flask import Flask
+import sys
+from flask import Flask, jsonify
 
-    app = Flask(__name__)
+# 初始化 Flask 应用
+app = Flask(__name__)
 
-    @app.route('/')
-    def home():
-        return "OpenClaw Sales Bot is Running!"
+@app.route('/')
+def home():
+    """根路径欢迎页面"""
+    return {
+        "status": "online",
+        "message": "OpenClaw Sales Bot is Running!",
+        "project": "Sabaki Green Estate Management",
+        "region": "Kenya/Nairobi"
+    }
 
-    if __name__ == "__main__":
+@app.route('/health')
+def health_check():
+    """健康检查接口"""
+    return jsonify({"status": "healthy"}), 200
+
+if __name__ == "__main__":
+    # 获取 Hugging Face 分配的端口，默认为 7860
+    try:
         port = int(os.environ.get("PORT", 7860))
-        app.run(host='0.0.0.0', port=port)
-    ```
-4.  点击底部的 **Commit changes**。
-
----
-
-### ✅ 完成后的检查
-此时你的仓库看起来应该有：
-*   `main.py`
-*   `requirements.txt`
-*   `index.html` (你原本就有的)
-*   `functions/` (你原本就有的)
-
-**只要有了这两个新文件，你再去 Hugging Face 点一下 "Factory rebuild"，之前那个 "No such file or directory" 的报错就会彻底消失，项目就能跑起来了！**
+        print(f"--- Starting Sales Bot on port {port} ---")
+        # 允许外部访问
+        app.run(host='0.0.0.0', port=port, debug=False)
+    except Exception as e:
+        print(f"Critical Error during startup: {e}")
+        sys.exit(1)
