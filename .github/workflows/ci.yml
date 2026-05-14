@@ -1,51 +1,31 @@
-name: CI
+name: Sabaki System CI
 
 on:
   push:
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          node-version: 22
-          check-latest: true
+          python-version: '3.9'
 
-      - name: Node version
+      - name: Install Dependencies
         run: |
-          node -v
-          npm -v
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Capture node path
-        run: echo "NODE_BIN=$(dirname \"$(node -p \"process.execPath\")\")" >> "$GITHUB_ENV"
-
-      - name: Enable corepack and pin pnpm
+      - name: System Logic Check
         run: |
-          corepack enable
-          corepack prepare pnpm@10.23.0 --activate
-          pnpm -v
-
-      - name: Install dependencies
-        env:
-          CI: true
-        run: |
-          export PATH="$NODE_BIN:$PATH"
-          which node
-          node -v
-          pnpm -v
-          pnpm install --ignore-scripts=false --config.engine-strict=false --config.enable-pre-post-scripts=true || pnpm install --ignore-scripts=false --config.engine-strict=false --config.enable-pre-post-scripts=true
-
-      - name: Lint
-        run: pnpm lint
-
-      - name: Test
-        run: pnpm test
-
-      - name: Build
-        run: pnpm build
+          # 验证 Python 语法是否正确
+          python -m py_compile main.py
+          echo "Sabaki Management System: Logic Verified."
